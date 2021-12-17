@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@wealthica/wealthica.js": "^0.0.21"
+  }
+}
