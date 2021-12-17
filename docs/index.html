@@ -47,13 +47,14 @@
         showAddonData(addonOptions.data);
       });
 
+      let formatter = new Intl.NumberFormat('en-US', {style: 'currency',currency: 'USD'})
+
       $('#show').on('click', () => {
         addon.api.getPositions().then(result => {
           total = result.reduce((total, item) => total + item.book_value, 0)
-          totalStr = total.toLocaleString('en-US', {maximumFractionDigits: 2})
           let text = ""
           if (total < 2000000)
-            text = `Lolz! You think you can out-wealth Paolo with a measly ${totalStr}? Thank you, come again!`
+            text = `Lolz! You think you can out-wealth Paolo with a measly ${formatter.format(total)}? Thank you, come again!`
           else
             text = "Yes. yes you are!"
 
