@@ -12,9 +12,11 @@
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js"></script>
 </head>
 <body>
-  <h3>Beep boop bop Add-on.</h3>
-  <p>Who's wealthier?!?</p>
+  <h3>Welcome to the "Are you Wealthier then Paolo?" Add-on</h3>
   <p>
+    <button type="button" id="show">Show me!</button>
+  </p>
+  <p style="display:none">
     <button type="button" disabled="disabled" id="getTransactions">List Transactions</button>
     <button type="button" disabled="disabled" id="getPositions">List Positions</button>
     <button type="button" disabled="disabled" id="addTransaction">Add Transaction</button>
@@ -28,6 +30,7 @@
 
     $(function () {
       addon = new Addon();
+      window.addon = addon
 
       addon.on('init', function (options) {
         // Dashboard is ready and is signaling to the add-on that it should
