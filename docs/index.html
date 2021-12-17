@@ -14,16 +14,19 @@
 <body>
   <h3>Welcome to the "Are you Wealthier then Paolo?" Add-on</h3>
   <p>
-    <button type="button" id="show">Show me!</button>
+    <button type="button" disabled="disabled" id="show">Show me!</button>
+    <p id="richer"></p>
   </p>
-  <p style="display:none">
-    <button type="button" disabled="disabled" id="getTransactions">List Transactions</button>
-    <button type="button" disabled="disabled" id="getPositions">List Positions</button>
-    <button type="button" disabled="disabled" id="addTransaction">Add Transaction</button>
-    <button type="button" disabled="disabled" id="saveData">Save Data</button>
-  </p>
-  <textarea id="data" rows="8" cols="100"></textarea>
-  <div id="result"></div>
+  <div style="display:none">
+    <p>
+      <button type="button" disabled="disabled" id="getTransactions">List Transactions</button>
+      <button type="button" disabled="disabled" id="getPositions">List Positions</button>
+      <button type="button" disabled="disabled" id="addTransaction">Add Transaction</button>
+      <button type="button" disabled="disabled" id="saveData">Save Data</button>
+    </p>
+    <textarea id="data" rows="8" cols="100"></textarea>
+    <div id="result"></div>
+  </div>
 
   <script type="text/javascript">
     var addon, addonOptions;
@@ -43,6 +46,20 @@
         addonOptions = _.extend(addonOptions, options);
         showAddonData(addonOptions.data);
       });
+
+      $('#show').on('click', () => {
+        addon.api.getPositions().then(result => {
+          total = res.reduce((total, item) => total + item.book_value, 0)
+          let text = ""
+          if (total < 2000000)
+            text = `Lolz! You think you can out-wealth Paolo with a measly ${total}? Thank you, come again!`
+          else
+            text = "Yes. yes you are!"
+
+          $("richer").text = text;
+        })
+      })
+      $(this).removeAttr('disabled');
 
       $('#addTransaction').on('click', function () {
         $(this).attr('disabled', 'disabled');
