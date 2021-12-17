@@ -17,6 +17,16 @@
     <button type="button" disabled="disabled" id="show">Show me!</button>
     <p id="richer"></p>
   </p>
+  <div style="display:none">
+    <p>
+      <button type="button" disabled="disabled" id="getTransactions">List Transactions</button>
+      <button type="button" disabled="disabled" id="getPositions">List Positions</button>
+      <button type="button" disabled="disabled" id="addTransaction">Add Transaction</button>
+      <button type="button" disabled="disabled" id="saveData">Save Data</button>
+    </p>
+    <textarea id="data" rows="8" cols="100"></textarea>
+    <div id="result"></div>
+  </div>
 
   <script type="text/javascript">
     var addon, addonOptions;
@@ -46,10 +56,75 @@
           else
             text = "Yes. yes you are!"
 
-          $("#richer").text = text;
+          $("#richer").text(text);
         })
       })
       $(this).removeAttr('disabled');
+
+      $('#addTransaction').on('click', function () {
+        $(this).attr('disabled', 'disabled');
+
+        addon.addTransaction({
+          description: "New transaction from Example Add-on"
+        }).then(function (transaction) {
+          $('#result').html('New transaction:<br><code>' + JSON.stringify(transaction) + '</code>');
+        }).catch(function (err) {
+          $('#result').html('Error:<br><code>' + err + '</code>');
+        }).finally(function () {
+          $('#addTransaction').removeAttr('disabled');
+        });
+      });
+
+      $('#getTransactions').on('click', function () {
+        $(this).attr('disabled', 'disabled');
+
+        addon.api.getTransactions(getQueryFromOptions(addonOptions)).then(function (response) {
+          $('#result').html('List Transactions Result:<br><code>' + JSON.stringify(response) + '</code>');
+        }).catch(function (err) {
+          $('#result').html('Error:<br><code>' + err + '</code>');
+        }).finally(function () {
+          $('#getTransactions').removeAttr('disabled');
+        });
+      });
+
+      $('#getPositions').on('click', function () {
+        $(this).attr('disabled', 'disabled');
+
+        addon.api.getPositions(getQueryFromOptions(addonOptions)).then(function (response) {
+          $('#result').html('List Positions Result:<br><code>' + JSON.stringify(response) + '</code>');
+        }).catch(function (err) {
+          $('#result').html('Error:<br><code>' + err + '</code>');
+        }).finally(function () {
+          $('#getPositions').removeAttr('disabled');
+        });
+      });
+
+      $('#saveData').on('click', function () {
+        $(this).attr('disabled', 'disabled');
+        var newData = $('#data').val();
+
+        // Try parsing textarea value to a JSON object before passing to addon.saveData(data)
+        try { newData = JSON.parse(newData) }
+        catch (e) {
+          $('#result').html('Error:<br><code>Data must be JSON</code>');
+          $('#saveData').removeAttr('disabled');
+          return;
+        }
+
+        addon.saveData(newData).catch(function (err) {
+          $('#result').html('Error:<br><code>' + err + '</code>');
+        }).finally(function () {
+          $('#saveData').removeAttr('disabled');
+        });
+      });
+
+      // Show addon data in result box and optionally update the text input.
+      function showAddonData(data, updateInput) {
+        $('#result').html('Addon data:<br><code>' + JSON.stringify(data) + '</code>');
+        if (updateInput && data) {
+          $('#data').val(JSON.stringify(data));
+        }
+      }
 
       // Compose a query object from the addon options to pass to the API calls.
       function getQueryFromOptions (options) {
