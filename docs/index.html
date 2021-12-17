@@ -49,7 +49,7 @@
 
       $('#show').on('click', () => {
         addon.api.getPositions().then(result => {
-          total = res.reduce((total, item) => total + item.book_value, 0)
+          total = result.reduce((total, item) => total + item.book_value, 0)
           let text = ""
           if (total < 2000000)
             text = `Lolz! You think you can out-wealth Paolo with a measly ${total}? Thank you, come again!`
